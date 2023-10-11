@@ -1,0 +1,24 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    pv.kubernetes.io/provisioned-by: nfs.csi.k8s.io
+  name: pv-sabnzbd-watched
+spec:
+  capacity:
+    storage: 200Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs-csi
+  mountOptions:
+    - nfsvers=3
+    - nolock
+  csi:
+    driver: nfs.csi.k8s.io
+    readOnly: false
+    volumeHandle: kstorage1/mnt/ssd/watched
+    volumeAttributes:
+      server: kstorage1
+      share: /mnt/ssd/watched

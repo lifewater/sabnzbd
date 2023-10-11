@@ -1,0 +1,14 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-sabnzbd-incomplete-downloads
+  namespace: homelab
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 200Gi
+  volumeName: pv-sabnzbd-incomplete-downloads
+  storageClassName: nfs-csi

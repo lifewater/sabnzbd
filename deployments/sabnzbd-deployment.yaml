@@ -1,0 +1,64 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sabnzbd-deployment
+  namespace: homelab
+  labels:
+    app: sabnzbd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sabnzbd
+  template:
+    metadata:
+      labels:
+        app: sabnzbd
+    spec:
+      containers:
+      - name: sabnzbd-container
+        image: linuxserver/sabnzbd
+        ports:
+          - containerPort: 6789
+        volumeMounts:
+          - mountPath: /config
+            name: sabnzbd-config
+          - mountPath: /downloads
+            name: sabnzbd-downloads
+          - mountPath: /incomplete-downloads
+            name: sabnzbd-incomplete
+          - mountPath: /scripts
+            name: sabnzbd-scripts
+          - mountPath: /watched
+            name: sabnzbd-watched
+      volumes:
+        - name: sabnzbd-config
+          persistentVolumeClaim:
+            claimName: pvc-sabnzbd-config
+        - name: sabnzbd-downloads
+          persistentVolumeClaim:
+            claimName: pvc-sabnzbd-downloads
+        - name: sabnzbd-incomplete
+          persistentVolumeClaim:
+            claimName: pvc-sabnzbd-incomplete-downloads
+        - name: sabnzbd-scripts
+          persistentVolumeClaim:
+            claimName: pvc-sabnzbd-scripts
+        - name: sabnzbd-watched
+          persistentVolumeClaim:
+            claimName: pvc-sabnzbd-watched
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sabnzbd-service
+  namespace: homelab
+spec:
+  type: ClusterIP
+  selector:
+    app: sabnzbd
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080

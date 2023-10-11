@@ -1,0 +1,15 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: sabnzbd-ingress
+  namespace: homelab
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: PathPrefix('/sabnzbd')
+    kind: Rule
+    services:
+    - name: sabnzbd-service
+      port: 8080
