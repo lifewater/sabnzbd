@@ -19,6 +19,13 @@ spec:
       containers:
       - name: sabnzbd-container
         image: linuxserver/sabnzbd
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "1"
         ports:
           - containerPort: 6789
         volumeMounts:
@@ -60,5 +67,21 @@ spec:
     app: sabnzbd
   ports:
   - protocol: TCP
-    port: 6789
-    targetPort: 6789
+    port: 8080  
+    targetPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sabnzbd-nodeport-service
+  namespace: homelab
+spec:
+  type: NodePort
+  selector:
+    app: sabnzbd
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    nodePort: 32080
